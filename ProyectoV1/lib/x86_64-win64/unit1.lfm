@@ -1,0 +1,100 @@
+object TForm1: TTForm1
+  Left = 350
+  Height = 517
+  Top = 250
+  Width = 1175
+  Caption = 'TForm1'
+  ClientHeight = 517
+  ClientWidth = 1175
+  LCLVersion = '4.4.0.0'
+  OnCreate = FormCreate
+  object ButtonCargar: TButton
+    Left = 8
+    Height = 40
+    Top = 8
+    Width = 107
+    Caption = 'ButtonCargar'
+    TabOrder = 0
+  end
+  object ButtonCalcular: TButton
+    Left = 8
+    Height = 41
+    Top = 56
+    Width = 99
+    Caption = 'ButtonCalcular'
+    TabOrder = 1
+  end
+  object ButtonNormMinMaX: TButton
+    Left = 8
+    Height = 48
+    Top = 104
+    Width = 144
+    Caption = 'ButtonNormMinMaX'
+    TabOrder = 2
+  end
+  object ButtonNormZscore: TButton
+    Left = 16
+    Height = 56
+    Top = 160
+    Width = 128
+    Caption = 'ButtonNormZscore'
+    TabOrder = 3
+  end
+  object ButtonGuardar: TButton
+    Left = 16
+    Height = 49
+    Top = 224
+    Width = 120
+    Caption = 'ButtonGuardar'
+    TabOrder = 4
+  end
+  object StringGridDatos: TStringGrid
+    Left = 208
+    Height = 232
+    Top = 16
+    Width = 432
+    FixedRows = 0
+    TabOrder = 5
+  end
+  object StringGridStats: TStringGrid
+    Left = 200
+    Height = 216
+    Top = 288
+    Width = 480
+    ColCount = 4
+    FixedRows = 0
+    RowCount = 1
+    TabOrder = 6
+    Cells = (
+      4
+      0
+      0
+      'Columna'
+      1
+      0
+      'Media'
+      2
+      0
+      'Mediana'
+      3
+      0
+      'Desviacion'
+    )
+  end
+  object StringGridNorm: TStringGrid
+    Left = 672
+    Height = 252
+    Top = 56
+    Width = 408
+    FixedRows = 0
+    TabOrder = 7
+  end
+  object OpenDialog1: TOpenDialog
+    Left = 800
+    Top = 360
+  end
+  object SaveDialog1: TSaveDialog
+    Left = 872
+    Top = 360
+  end
+end
