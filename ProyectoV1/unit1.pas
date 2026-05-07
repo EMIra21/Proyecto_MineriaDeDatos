@@ -98,7 +98,7 @@ begin
 
         StringGridStats.RowCount := FilaE + 1;
 
-        StringGridStats.Cells[0, FilaE] := 'Columna ' + IntToStr(Col);
+        StringGridStats.Cells[0, FilaE] := 'Columna ' + IntToStr(Col+1);
         StringGridStats.Cells[1, FilaE] := FloatToStrF(Media, ffFixed, 10, 4);
         StringGridStats.Cells[2, FilaE] := FloatToStrF(Desv, ffFixed, 10, 4);
 
@@ -224,6 +224,9 @@ end;
 procedure TTForm1.FormCreate(Sender: TObject);
 begin
   ButtonCalcular.OnClick := @ButtonCalcularClick;
+  ButtonGuardar.OnClick := @ButtonGuardarClick;
+  ButtonNormMinMax.OnClick := @ButtonNormMinMaxClick;
+  ButtonNormZscore.OnClick := @ButtonNormZscoreClick;
 
   StringGridDatos.FixedRows := 0;
   StringGridStats.FixedRows := 0;

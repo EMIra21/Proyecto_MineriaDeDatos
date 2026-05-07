@@ -68,8 +68,6 @@ var
   Datos: TArreglo1;
   Media, Desv: Double;
 begin
-  ShowMessage('Si sale este mensaje, el boton SI esta conectado');
-
   if StringGridDatos.RowCount <= 1 then
   begin
     ShowMessage('Se necesita cargar el archivo');
@@ -100,7 +98,7 @@ begin
 
         StringGridStats.RowCount := FilaE + 1;
 
-        StringGridStats.Cells[0, FilaE] := 'Columna ' + IntToStr(Col);
+        StringGridStats.Cells[0, FilaE] := 'Columna ' + IntToStr(Col+1);
         StringGridStats.Cells[1, FilaE] := FloatToStrF(Media, ffFixed, 10, 4);
         StringGridStats.Cells[2, FilaE] := FloatToStrF(Desv, ffFixed, 10, 4);
 
@@ -109,7 +107,6 @@ begin
     end;
   end;
 
-  ShowMessage('Columnas numericas calculadas: ' + IntToStr(FilaE - 1));
 end;
 
 procedure TTForm1.ButtonNormZscoreClick(Sender: TObject);
@@ -227,6 +224,8 @@ end;
 procedure TTForm1.FormCreate(Sender: TObject);
 begin
   ButtonCalcular.OnClick := @ButtonCalcularClick;
+  ButtonGuardar.OnClick := @ButtonGuardarClick;
+  ButtonNormMinMax.OnClick := @ButtonNormMinMaxClick;
 
   StringGridDatos.FixedRows := 0;
   StringGridStats.FixedRows := 0;
