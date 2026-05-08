@@ -13,26 +13,31 @@ type
   { TTForm1 }
 
   TTForm1 = class(TForm)
+    ButtonNormEscala: TButton;
 
     ButtonCargar: TButton;
     ButtonGuardar: TButton;
     ButtonNormZscore: TButton;
     ButtonNormMinMaX: TButton;
     ButtonCalcular: TButton;
+    ButtonNormEscala: TButton;
     OpenDialog1: TOpenDialog;
     SaveDialog1: TSaveDialog;
     StringGridNorm: TStringGrid;
     StringGridStats: TStringGrid;
     StringGridDatos: TStringGrid;
 
+
     procedure ButtonCargarClick(Sender: TObject);
     procedure ButtonCalcularClick(Sender: TObject);
     procedure ButtonNormZscoreClick(Sender: TObject);
     procedure ButtonNormMinMaxClick(Sender: TObject);
+    procedure ButtonNormEscalaClick(Sender: TObject);
     procedure ButtonGuardarClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
 
   private
+    ArchivoCargado: Boolean;
     function ColumnaNum(Col: Integer): Boolean;
     function ObtenerColumna(Col: Integer): TArreglo1;
     function CalcularMedia(Datos: TArreglo1): Double;
@@ -58,8 +63,28 @@ begin
      if OpenDialog1.Execute then
         begin
              StringGridDatos.LoadFromCSVFile(OpenDialog1.Filename);
+
+             StringGridNorm.Clear;
+             StringGridNorm.RowCount := 0;
+             StringGridNorm.ColCount := 0;
+
+             ArchivoCargado := True;
              ShowMessage('Archivo cargado');
         end;
+end;
+
+procedure TTForm1.ButtonNormEscalaClick(Sender: TObject);
+var
+  col, fila, i: integer;
+  datos: TArreglo;
+    max, divi, valor, norm: Double;
+begin
+     if ArchivoCargado = False then
+        begin
+             ShowMessage('Primero se debe de cargar el archivo');
+             Exit;
+        end;
+
 end;
 
 procedure TTForm1.ButtonCalcularClick(Sender: TObject);
@@ -68,9 +93,9 @@ var
   Datos: TArreglo1;
   Media, Desv: Double;
 begin
-  if StringGridDatos.RowCount <= 1 then
+  if ArchivoCargado = False then
   begin
-    ShowMessage('Se necesita cargar el archivo');
+    ShowMessage('Primero se debe de cargar el archivo');
     Exit;
   end;
 
@@ -98,7 +123,7 @@ begin
 
         StringGridStats.RowCount := FilaE + 1;
 
-        StringGridStats.Cells[0, FilaE] := 'Columna ' + IntToStr(Col+1);
+        StringGridStats.Cells[0, FilaE] := 'Col ' + IntToStr(Col+1);
         StringGridStats.Cells[1, FilaE] := FloatToStrF(Media, ffFixed, 10, 4);
         StringGridStats.Cells[2, FilaE] := FloatToStrF(Desv, ffFixed, 10, 4);
 
@@ -116,9 +141,9 @@ var
   media, desv, valor, norm: Double;
   FS: TFormatSettings;
 begin
-  if StringGridDatos.RowCount = 0 then
+  if ArchivoCargado = False then
      begin
-          ShowMessage('Primero se debe cargar el archivo');
+          ShowMessage('Primero se debe de cargar el archivo');
           Exit;
      end;
   FS := DefaultFormatSettings;
@@ -156,9 +181,9 @@ var
   min, max, val, norm: double;
   FS: TFormatSettings;
 begin
-  if StringGridDatos.RowCount <= 1 then
+  if ArchivoCargado = False then
   begin
-    ShowMessage('Primero se tiene que cargar el archivo');
+    ShowMessage('Primero se debe de cargar el archivo');
     Exit;
   end;
 
@@ -202,31 +227,34 @@ begin
       end;
     end;
   end;
-
   ShowMessage('Normalizacion Min-Max realizada');
 end;
 procedure TTForm1.ButtonGuardarClick(Sender: TObject);
 begin
-  if StringGridNorm.RowCount = 0 then
-     begin
-          ShowMessage('Se tiene que normalizar los datos primero');
-          Exit;
-     end;
+
+  if StringGridNorm.RowCount <= 1 then
+  begin
+    ShowMessage('No hay datos normalizados para guardar');
+    Exit;
+  end;
+
   if SaveDialog1.Execute then
-     begin
-          StringGridNorm.SaveToCSVFile(SaveDialog1.FileName);
-          ShowMessage('Archivo normalizado guardado');
-     end;
-
-
+  begin
+    StringGridNorm.SaveToCSVFile(SaveDialog1.FileName);
+    ShowMessage('Archivo normalizado guardado');
+  end;
 end;
 
 procedure TTForm1.FormCreate(Sender: TObject);
 begin
+
+  ArchivoCargado := False;
+
   ButtonCalcular.OnClick := @ButtonCalcularClick;
   ButtonGuardar.OnClick := @ButtonGuardarClick;
   ButtonNormMinMax.OnClick := @ButtonNormMinMaxClick;
   ButtonNormZscore.OnClick := @ButtonNormZscoreClick;
+  ButtonNormEscala.OnClick := @ButtonNormEscala;
 
   StringGridDatos.FixedRows := 0;
   StringGridStats.FixedRows := 0;

@@ -21,6 +21,8 @@ type
     ButtonCalcular: TButton;
     OpenDialog1: TOpenDialog;
     SaveDialog1: TSaveDialog;
+    ScrollBar1: TScrollBar;
+    ScrollBar2: TScrollBar;
     StringGridNorm: TStringGrid;
     StringGridStats: TStringGrid;
     StringGridDatos: TStringGrid;
@@ -33,6 +35,7 @@ type
     procedure FormCreate(Sender: TObject);
 
   private
+    ArchivoCargado: Boolean;
     function ColumnaNum(Col: Integer): Boolean;
     function ObtenerColumna(Col: Integer): TArreglo1;
     function CalcularMedia(Datos: TArreglo1): Double;
@@ -58,6 +61,12 @@ begin
      if OpenDialog1.Execute then
         begin
              StringGridDatos.LoadFromCSVFile(OpenDialog1.Filename);
+
+             StringGridNorm.Clear;
+             StringGridNorm.RowCount := 0;
+             StringGridNorm.ColCount := 0;
+
+             ArchivoCargado := True;
              ShowMessage('Archivo cargado');
         end;
 end;
@@ -68,9 +77,9 @@ var
   Datos: TArreglo1;
   Media, Desv: Double;
 begin
-  if StringGridDatos.RowCount <= 1 then
+  if ArchivoCargado = False then
   begin
-    ShowMessage('Se necesita cargar el archivo');
+    ShowMessage('Primero se debe de cargar el archivo');
     Exit;
   end;
 
@@ -98,7 +107,7 @@ begin
 
         StringGridStats.RowCount := FilaE + 1;
 
-        StringGridStats.Cells[0, FilaE] := 'Columna ' + IntToStr(Col+1);
+        StringGridStats.Cells[0, FilaE] := 'Col ' + IntToStr(Col+1);
         StringGridStats.Cells[1, FilaE] := FloatToStrF(Media, ffFixed, 10, 4);
         StringGridStats.Cells[2, FilaE] := FloatToStrF(Desv, ffFixed, 10, 4);
 
@@ -116,9 +125,9 @@ var
   media, desv, valor, norm: Double;
   FS: TFormatSettings;
 begin
-  if StringGridDatos.RowCount = 0 then
+  if ArchivoCargado = False then
      begin
-          ShowMessage('Primero se debe cargar el archivo');
+          ShowMessage('Primero se debe de cargar el archivo');
           Exit;
      end;
   FS := DefaultFormatSettings;
@@ -156,9 +165,9 @@ var
   min, max, val, norm: double;
   FS: TFormatSettings;
 begin
-  if StringGridDatos.RowCount <= 1 then
+  if ArchivoCargado = False then
   begin
-    ShowMessage('Primero se tiene que cargar el archivo');
+    ShowMessage('Primero se debe de cargar el archivo');
     Exit;
   end;
 
@@ -202,30 +211,32 @@ begin
       end;
     end;
   end;
-
   ShowMessage('Normalizacion Min-Max realizada');
 end;
 procedure TTForm1.ButtonGuardarClick(Sender: TObject);
 begin
-  if StringGridNorm.RowCount = 0 then
-     begin
-          ShowMessage('Se tiene que normalizar los datos primero');
-          Exit;
-     end;
+
+  if StringGridNorm.RowCount <= 1 then
+  begin
+    ShowMessage('No hay datos normalizados para guardar');
+    Exit;
+  end;
+
   if SaveDialog1.Execute then
-     begin
-          StringGridNorm.SaveToCSVFile(SaveDialog1.FileName);
-          ShowMessage('Archivo normalizado guardado');
-     end;
-
-
+  begin
+    StringGridNorm.SaveToCSVFile(SaveDialog1.FileName);
+    ShowMessage('Archivo normalizado guardado');
+  end;
 end;
 
 procedure TTForm1.FormCreate(Sender: TObject);
 begin
+
+  ArchivoCargado := False;
   ButtonCalcular.OnClick := @ButtonCalcularClick;
   ButtonGuardar.OnClick := @ButtonGuardarClick;
   ButtonNormMinMax.OnClick := @ButtonNormMinMaxClick;
+  ButtonNormZscore.OnClick := @ButtonNormZscoreClick;
 
   StringGridDatos.FixedRows := 0;
   StringGridStats.FixedRows := 0;
