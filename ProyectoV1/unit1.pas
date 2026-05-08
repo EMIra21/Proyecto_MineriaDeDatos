@@ -13,7 +13,6 @@ type
   { TTForm1 }
 
   TTForm1 = class(TForm)
-    ButtonNormEscala: TButton;
 
     ButtonCargar: TButton;
     ButtonGuardar: TButton;
@@ -76,14 +75,52 @@ end;
 procedure TTForm1.ButtonNormEscalaClick(Sender: TObject);
 var
   col, fila, i: integer;
-  datos: TArreglo;
-    max, divi, valor, norm: Double;
+  datos: TArreglo1;
+  max, divi, valor, norm: Double;
+  FS: TFormatSettings;
 begin
      if ArchivoCargado = False then
         begin
              ShowMessage('Primero se debe de cargar el archivo');
              Exit;
         end;
+     FS := DefaultFormatSettings;
+     FS.DecimalSeparator := '.';
+
+     CopiarNormalizado;
+
+     for col := 0 to StringGridDatos.ColCount - 2 do
+     begin
+       if ColumnaNum(col) then
+          begin
+               datos := ObtenerColumna(col);
+               if Length(datos) = 0 then
+                  Continue;
+               max := Abs(datos[0]);
+               for i := 0 to Length(datos) -1 do
+               begin
+                 if Abs(datos[i]) > max then max := Abs(datos[i]);
+               end;
+
+               divi := 1;
+
+               while max / divi >= 1 do
+               begin
+                 divi := divi * 10
+               end;
+
+               for fila := 1 to StringGridDatos.RowCount - 1 do
+               begin
+                 if TryStrToFloat(Trim(StringGridDatos.Cells[col, fila]), valor, FS) then
+                    begin
+                         norm := valor / divi;
+                         StringGridNorm.Cells[col, fila] := FloatToStrF(norm, ffFixed , 10, 4);
+                    end;
+               end;
+
+          end;
+     end;
+     ShowMessage('Normalizacion por escalamiento decimal realizada');
 
 end;
 
@@ -254,7 +291,7 @@ begin
   ButtonGuardar.OnClick := @ButtonGuardarClick;
   ButtonNormMinMax.OnClick := @ButtonNormMinMaxClick;
   ButtonNormZscore.OnClick := @ButtonNormZscoreClick;
-  ButtonNormEscala.OnClick := @ButtonNormEscala;
+  ButtonNormEscala.OnClick := @ButtonNormEscalaClick;
 
   StringGridDatos.FixedRows := 0;
   StringGridStats.FixedRows := 0;

@@ -19,18 +19,19 @@ type
     ButtonNormZscore: TButton;
     ButtonNormMinMaX: TButton;
     ButtonCalcular: TButton;
+    ButtonNormEscala: TButton;
     OpenDialog1: TOpenDialog;
     SaveDialog1: TSaveDialog;
-    ScrollBar1: TScrollBar;
-    ScrollBar2: TScrollBar;
     StringGridNorm: TStringGrid;
     StringGridStats: TStringGrid;
     StringGridDatos: TStringGrid;
+
 
     procedure ButtonCargarClick(Sender: TObject);
     procedure ButtonCalcularClick(Sender: TObject);
     procedure ButtonNormZscoreClick(Sender: TObject);
     procedure ButtonNormMinMaxClick(Sender: TObject);
+    procedure ButtonNormEscalaClick(Sender: TObject);
     procedure ButtonGuardarClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
 
@@ -69,6 +70,58 @@ begin
              ArchivoCargado := True;
              ShowMessage('Archivo cargado');
         end;
+end;
+
+procedure TTForm1.ButtonNormEscalaClick(Sender: TObject);
+var
+  col, fila, i: integer;
+  datos: TArreglo1;
+  max, divi, valor, norm: Double;
+  FS: TFormatSettings;
+begin
+     if ArchivoCargado = False then
+        begin
+             ShowMessage('Primero se debe de cargar el archivo');
+             Exit;
+        end;
+     FS := DefaultFormatSettings;
+     FS.DecimalSeparator := '.';
+
+     CopiarNormalizado;
+
+     for col := 0 to StringGridDatos.ColCount - 2 do
+     begin
+       if ColumnaNum(col) then
+          begin
+               datos := ObtenerColumna(col);
+               if Length(datos) = 0 then
+                  Continue;
+               max := Abs(datos[0]);
+               for i := 0 to Length(datos) -1 do
+               begin
+                 if Abs(datos[i]) > max then max := Abs(datos[i]);
+               end;
+
+               divi := 1;
+
+               while max / divi >= 1 do
+               begin
+                 divi := divi * 10
+               end;
+
+               for fila := 1 to StringGridDatos.RowCount - 1 do
+               begin
+                 if TryStrToFloat(Trim(StringGridDatos.Cells[col, fila]), valor, FS) then
+                    begin
+                         norm := valor / divi;
+                         StringGridNorm.Cells[col, fila] := FloatToStrF(norm, ffFixed , 10, 4);
+                    end;
+               end;
+
+          end;
+     end;
+     ShowMessage('Normalizacion por escalamiento decimal realizada');
+
 end;
 
 procedure TTForm1.ButtonCalcularClick(Sender: TObject);
@@ -233,10 +286,12 @@ procedure TTForm1.FormCreate(Sender: TObject);
 begin
 
   ArchivoCargado := False;
+
   ButtonCalcular.OnClick := @ButtonCalcularClick;
   ButtonGuardar.OnClick := @ButtonGuardarClick;
   ButtonNormMinMax.OnClick := @ButtonNormMinMaxClick;
   ButtonNormZscore.OnClick := @ButtonNormZscoreClick;
+  ButtonNormEscala.OnClick := @ButtonNormEscala;
 
   StringGridDatos.FixedRows := 0;
   StringGridStats.FixedRows := 0;
