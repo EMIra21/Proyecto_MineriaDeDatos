@@ -5,7 +5,8 @@ unit Unit1;
 interface
 
 uses
-  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, Grids, Math;
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, StdCtrls, Grids, Spin,
+  Menus, ComCtrls, Math;
 
 type
 
@@ -13,18 +14,27 @@ type
   { TTForm1 }
 
   TTForm1 = class(TForm)
-
+    ButtonCalcular: TButton;
     ButtonCargar: TButton;
     ButtonGuardar: TButton;
-    ButtonNormZscore: TButton;
-    ButtonNormMinMaX: TButton;
-    ButtonCalcular: TButton;
     ButtonNormEscala: TButton;
+    ButtonNormMinMaX: TButton;
+    ButtonNormZscore: TButton;
+    FloatSpinMax: TFloatSpinEdit;
+
+    MainMenu1: TMainMenu;
+    MenuItem1: TMenuItem;
+    MenuItem2: TMenuItem;
     OpenDialog1: TOpenDialog;
+    PageControl1: TPageControl;
+    Selector: TPageControl;
     SaveDialog1: TSaveDialog;
+    Archivo: TTabSheet;
+    Grafica: TTabSheet;
+    StaticText1: TStaticText;
+    StringGridDatos: TStringGrid;
     StringGridNorm: TStringGrid;
     StringGridStats: TStringGrid;
-    StringGridDatos: TStringGrid;
 
 
     procedure ButtonCargarClick(Sender: TObject);
@@ -33,7 +43,10 @@ type
     procedure ButtonNormMinMaxClick(Sender: TObject);
     procedure ButtonNormEscalaClick(Sender: TObject);
     procedure ButtonGuardarClick(Sender: TObject);
+    procedure FloatSpinMaxChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure MenuItem1Click(Sender: TObject);
+    procedure SelectorChange(Sender: TObject);
 
   private
     ArchivoCargado: Boolean;
@@ -217,10 +230,19 @@ var
   datos: TArreglo1;
   min, max, val, norm: double;
   FS: TFormatSettings;
+  maxMod: double;
 begin
   if ArchivoCargado = False then
   begin
     ShowMessage('Primero se debe de cargar el archivo');
+    Exit;
+  end;
+
+  maxMod := FloatSpinMax.Value;
+
+  if maxMod <= 0 then
+  begin
+    ShowMessage('Valor invalido');
     Exit;
   end;
 
@@ -257,7 +279,7 @@ begin
           if max - min = 0 then
             norm := 0
           else
-            norm := (val - min) / (max - min);
+            norm := (val - min) / (max - min) * maxMod;
 
           StringGridNorm.Cells[col, fila] := FloatToStrF(norm, ffFixed, 10, 4);
         end;
@@ -282,6 +304,11 @@ begin
   end;
 end;
 
+procedure TTForm1.FloatSpinMaxChange(Sender: TObject);
+begin
+
+end;
+
 procedure TTForm1.FormCreate(Sender: TObject);
 begin
 
@@ -293,6 +320,8 @@ begin
   ButtonNormZscore.OnClick := @ButtonNormZscoreClick;
   ButtonNormEscala.OnClick := @ButtonNormEscalaClick;
 
+  FloatSpinMax.Value := 1;
+
   StringGridDatos.FixedRows := 0;
   StringGridStats.FixedRows := 0;
   StringGridNorm.FixedRows := 0;
@@ -303,6 +332,16 @@ begin
   StringGridStats.Cells[0, 0] := 'Columna';
   StringGridStats.Cells[1, 0] := 'Media';
   StringGridStats.Cells[2, 0] := 'Desviacion';
+end;
+
+procedure TTForm1.MenuItem1Click(Sender: TObject);
+begin
+
+end;
+
+procedure TTForm1.SelectorChange(Sender: TObject);
+begin
+
 end;
 
 function TTForm1.ColumnaNum(Col: Integer): Boolean;

@@ -2,100 +2,144 @@ object TForm1: TTForm1
   Left = 350
   Height = 533
   Top = 250
-  Width = 1175
+  Width = 1215
   Caption = 'TForm1'
   ClientHeight = 533
-  ClientWidth = 1175
+  ClientWidth = 1215
+  Menu = MainMenu1
   LCLVersion = '4.4.0.0'
   OnCreate = FormCreate
-  object ButtonCargar: TButton
-    Left = 16
-    Height = 40
-    Top = 104
-    Width = 107
-    Caption = 'ButtonCargar'
+  object PageControl1: TPageControl
+    Left = 0
+    Height = 13
+    Top = 520
+    Width = 1215
+    Align = alBottom
     TabOrder = 0
-    OnClick = ButtonCargarClick
   end
-  object ButtonCalcular: TButton
-    Left = 16
-    Height = 41
-    Top = 392
-    Width = 99
-    Caption = 'ButtonCalcular'
+  object Selector: TPageControl
+    Left = 0
+    Height = 496
+    Top = 0
+    Width = 1184
+    ActivePage = Archivo
+    TabIndex = 0
     TabOrder = 1
-    OnClick = ButtonCalcularClick
-  end
-  object ButtonNormMinMaX: TButton
-    Left = 704
-    Height = 48
-    Top = 280
-    Width = 144
-    Caption = 'ButtonNormMinMaX'
-    TabOrder = 2
-  end
-  object ButtonNormZscore: TButton
-    Left = 864
-    Height = 48
-    Top = 280
-    Width = 128
-    Caption = 'ButtonNormZscore'
-    TabOrder = 3
-  end
-  object ButtonGuardar: TButton
-    Left = 1000
-    Height = 49
-    Top = 432
-    Width = 120
-    Caption = 'ButtonGuardar'
-    TabOrder = 4
-  end
-  object StringGridDatos: TStringGrid
-    Left = 152
-    Height = 232
-    Top = 24
-    Width = 432
-    FixedRows = 0
-    TabOrder = 5
-  end
-  object StringGridStats: TStringGrid
-    Left = 152
-    Height = 216
-    Top = 280
-    Width = 280
-    ColCount = 3
-    FixedRows = 0
-    RowCount = 1
-    TabOrder = 6
-    Cells = (
-      3
-      0
-      0
-      'Columna'
-      1
-      0
-      'Media'
-      2
-      0
-      'Mediana'
-    )
-  end
-  object StringGridNorm: TStringGrid
-    Left = 712
-    Height = 252
-    Top = 16
-    Width = 408
-    FixedRows = 0
-    TabOrder = 7
-  end
-  object ButtonNormEscala: TButton
-    Left = 1008
-    Height = 48
-    Top = 280
-    Width = 128
-    Caption = 'ButtonNormEscala'
-    TabOrder = 8
-    OnClick = ButtonNormEscalaClick
+    OnChange = SelectorChange
+    object Archivo: TTabSheet
+      Caption = 'Archivo'
+      ClientHeight = 468
+      ClientWidth = 1176
+      object ButtonCargar: TButton
+        Left = 16
+        Height = 40
+        Top = 104
+        Width = 107
+        Caption = 'ButtonCargar'
+        TabOrder = 0
+        OnClick = ButtonCargarClick
+      end
+      object ButtonCalcular: TButton
+        Left = 16
+        Height = 41
+        Top = 392
+        Width = 99
+        Caption = 'ButtonCalcular'
+        TabOrder = 1
+        OnClick = ButtonCalcularClick
+      end
+      object ButtonNormMinMaX: TButton
+        Left = 704
+        Height = 48
+        Top = 280
+        Width = 144
+        Caption = 'ButtonNormMinMaX'
+        TabOrder = 2
+        OnClick = ButtonNormMinMaXClick
+      end
+      object ButtonNormZscore: TButton
+        Left = 864
+        Height = 48
+        Top = 280
+        Width = 128
+        Caption = 'ButtonNormZscore'
+        TabOrder = 3
+      end
+      object ButtonGuardar: TButton
+        Left = 1000
+        Height = 49
+        Top = 432
+        Width = 120
+        Caption = 'ButtonGuardar'
+        TabOrder = 4
+      end
+      object StringGridDatos: TStringGrid
+        Left = 152
+        Height = 232
+        Top = 24
+        Width = 432
+        FixedRows = 0
+        TabOrder = 5
+      end
+      object StringGridStats: TStringGrid
+        Left = 152
+        Height = 216
+        Top = 280
+        Width = 280
+        ColCount = 3
+        FixedRows = 0
+        RowCount = 1
+        TabOrder = 6
+        Cells = (
+          3
+          0
+          0
+          'Columna'
+          1
+          0
+          'Media'
+          2
+          0
+          'Mediana'
+        )
+      end
+      object StringGridNorm: TStringGrid
+        Left = 712
+        Height = 252
+        Top = 16
+        Width = 408
+        FixedRows = 0
+        TabOrder = 7
+      end
+      object ButtonNormEscala: TButton
+        Left = 1008
+        Height = 48
+        Top = 280
+        Width = 128
+        Caption = 'ButtonNormEscala'
+        TabOrder = 8
+        OnClick = ButtonNormEscalaClick
+      end
+      object FloatSpinMax: TFloatSpinEdit
+        Left = 710
+        Height = 23
+        Top = 355
+        Width = 74
+        TabOrder = 9
+        OnChange = FloatSpinMaxChange
+      end
+      object StaticText1: TStaticText
+        Left = 696
+        Height = 41
+        Top = 392
+        Width = 129
+        Caption = 'Rango de 0 a n exclusivo para Min-Max'
+        TabOrder = 10
+      end
+    end
+    object Grafica: TTabSheet
+      Caption = 'Grafica'
+    end
   end
   object OpenDialog1: TOpenDialog
     Left = 800
@@ -104,5 +148,16 @@ object TForm1: TTForm1
   object SaveDialog1: TSaveDialog
     Left = 872
     Top = 360
+  end
+  object MainMenu1: TMainMenu
+    Left = 48
+    Top = 272
+    object MenuItem1: TMenuItem
+      Caption = 'MenuItem1'
+      OnClick = MenuItem1Click
+      object MenuItem2: TMenuItem
+        Caption = 'MenuItem2'
+      end
+    end
   end
 end
